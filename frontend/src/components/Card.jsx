@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-const BlogCard = () => {
+const Card = () => {
   return (
     <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg py-2 px-3 drop-shadow-2xl bg-slate-500">
       <div className="relative">
@@ -29,4 +29,4 @@ const BlogCard = () => {
   );
 };
 
-export default BlogCard;
+export default Card;

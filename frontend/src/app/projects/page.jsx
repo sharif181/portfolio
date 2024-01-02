@@ -1,11 +1,11 @@
 import Card from "@/components/Card";
 
-const BlogPage = () => {
+const ProjectPage = () => {
   return (
     <div className="py-2">
       <div className="flex justify-center">
         <h1 className="font-serif text-[20px] font-[20px] rounded-md bg-slate-600 px-6 py-1 m-2">
-          Blogs
+          Projects
         </h1>
       </div>
 
@@ -17,4 +17,4 @@ const BlogPage = () => {
   );
 };
 
-export default BlogPage;
+export default ProjectPage;

@@ -21,7 +21,10 @@ const NavBar = () => {
             </Link>
           </li>
           <li>
-            <Link href="/" className="bg-gray-500 px-3 py-2 rounded-3xl">
+            <Link
+              href="/projects"
+              className="bg-gray-500 px-3 py-2 rounded-3xl"
+            >
               Projects
             </Link>
           </li>
