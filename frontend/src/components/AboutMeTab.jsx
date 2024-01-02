@@ -51,11 +51,16 @@ const AboutMeTab = () => {
           Github
         </li>
       </ul>
-      {text.map((item) => {
-        <div className="mt-8 w-[511px] h-full py-6 px-4 rounded-md drop-shadow-2xl bg-slate-500 ">
-          {item.content}
-        </div>;
-      })}
+      {text.map((item) => (
+        <div
+          key={item.id}
+          className={`mt-8 w-[511px] h-full py-6 px-4 rounded-md drop-shadow-2xl bg-slate-500 ${
+            item.id === selectedId ? "visible" : "hidden"
+          }`}
+        >
+          {item.id === selectedId && item.content}
+        </div>
+      ))}
     </div>
   );
 };
