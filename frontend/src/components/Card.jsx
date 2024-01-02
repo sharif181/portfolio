@@ -12,7 +12,7 @@ const Card = () => {
           width={120}
           height={90}
         />
-        <span class="absolute top-2 left-2 bg-red-400 text-white-800 text-xs font-medium me-2 px-3.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
+        <span className="absolute top-2 left-2 bg-red-400 text-white-800 text-xs font-medium me-2 px-3.5 py-1.5 rounded dark:bg-blue-900 dark:text-blue-300">
           Default
         </span>
       </div>

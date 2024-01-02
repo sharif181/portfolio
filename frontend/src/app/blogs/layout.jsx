@@ -1,5 +1,3 @@
-import NavBar from "@/components/NavBar";
-
 export const metadata = {
   title: "Md Sharif Khan's blog",
   description: "need to be improved",
