@@ -7,6 +7,6 @@ This is for gradient backgroud
 */
 @layer base {
   body {
-    @apply h-screen bg-gradient-to-b from-slate-800 to-gray-950;
+    @apply min-h-screen bg-gradient-to-b from-slate-800 to-gray-950;
   }
 }
