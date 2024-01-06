@@ -1,2 +1,2 @@
 export const toolbars = `
-undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | searchreplace codesample | link`;
+undo redo | blocks | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | searchreplace codesample | link | image`;
