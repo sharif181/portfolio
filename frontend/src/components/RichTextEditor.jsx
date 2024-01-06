@@ -14,6 +14,28 @@ const RichTextEditor = () => {
   });
   // const [text, setText] = useState("");
 
+  const handleImageUpload = (blobInfo, progress, failure) => {
+    return new Promise(async (resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", blobInfo.blob());
+      try {
+        const response = await fetch("/api/blog", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const res = await response.json();
+          resolve("http://localhost:3000/" + res.location);
+        } else {
+          reject("Can upload image");
+        }
+      } catch (error) {
+        reject("Error uploading file:", error);
+      }
+    });
+  };
+
   const onSubmit = () => {
     console.log("data will be send ", value);
     setValue("");
@@ -39,22 +61,6 @@ const RichTextEditor = () => {
           height: 500,
           plugins: plugins,
           toolbar: toolbars,
-
-          // need to prepare backend then will come back
-          /* without images_upload_url set, Upload tab won't show up*/
-          // images_upload_url: "postAcceptor.php",
-
-          // /* we override default upload handler to simulate successful upload*/
-          images_upload_handler: function (blobInfo, success, failure) {
-            console.log(blobInfo);
-            setTimeout(function () {
-              /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-              success(
-                "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
-              );
-            }, 2000);
-          },
-
           // defined programming languages
           codesample_languages: [
             { text: "HTML/XML", value: "markup" },
@@ -93,6 +99,12 @@ const RichTextEditor = () => {
                 float: right;
               }
             `,
+          images_upload_url: "http://localhost:3000/api/blog",
+          automatic_uploads: true,
+          images_reuse_filename: true,
+          images_upload_handler: handleImageUpload,
+          imagetools_toolbar:
+            "rotateleft rotateright | flipv fliph | editimage imageoptions",
         }}
       />
       <button
