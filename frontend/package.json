@@ -3,16 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "node ./postinstall.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@tinymce/tinymce-react": "^4.3.2",
+    "fs-extra": "^11.2.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-type-animation": "^3.2.0"
+    "react-type-animation": "^3.2.0",
+    "tinymce": "^6.8.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
