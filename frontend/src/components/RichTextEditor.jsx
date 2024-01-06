@@ -3,16 +3,10 @@ import { useState } from "react";
 import { toolbars } from "@/lib/texteditor/toolbar";
 import { plugins } from "@/lib/texteditor/plugin";
 import { Editor } from "@tinymce/tinymce-react";
+import { Controller } from "react-hook-form";
 
-const RichTextEditor = () => {
-  const [value, setValue] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("content") || "";
-    } else {
-      return "";
-    }
-  });
-  // const [text, setText] = useState("");
+const RichTextEditor = ({ name, control, label, defaultvalue = "" }) => {
+  const [value, setValue] = useState(defaultvalue);
 
   const handleImageUpload = (blobInfo, progress, failure) => {
     return new Promise(async (resolve, reject) => {
@@ -36,45 +30,41 @@ const RichTextEditor = () => {
     });
   };
 
-  const onSubmit = () => {
-    console.log("data will be send ", value);
-    setValue("");
-
-    // console.log(text);
-  };
-
   return (
     <div className="w-full p-6">
-      <Editor
-        value={value}
-        // onInit={(evt, editor) => {
-        //   setText(editor.getContent({ format: "text" }));
-        // }}
+      {label && <label className="inline-block mb-1 pl-1">{label}</label>}
 
-        onEditorChange={(newValue, editor) => {
-          setValue(newValue);
-          localStorage.setItem("content", newValue);
-          // setText(editor.getContent({ format: "text" }));
-        }}
-        tinymceScriptSrc={"/tinymce/tinymce.min.js"}
-        init={{
-          height: 500,
-          plugins: plugins,
-          toolbar: toolbars,
-          // defined programming languages
-          codesample_languages: [
-            { text: "HTML/XML", value: "markup" },
-            { text: "JavaScript", value: "javascript" },
-            { text: "CSS", value: "css" },
-            { text: "PHP", value: "php" },
-            { text: "Ruby", value: "ruby" },
-            { text: "Python", value: "python" },
-            { text: "Java", value: "java" },
-            { text: "C", value: "c" },
-            { text: "C#", value: "csharp" },
-            { text: "C++", value: "cpp" },
-          ],
-          content_style: `
+      <Controller
+        name={name || "content"}
+        control={control}
+        render={({ field }) => (
+          <Editor
+            value={value}
+            initialValue={defaultvalue}
+            onEditorChange={(newValue, editor) => {
+              setValue(newValue);
+              localStorage.setItem("content", newValue);
+              field.onChange(newValue);
+            }}
+            tinymceScriptSrc={"/tinymce/tinymce.min.js"}
+            init={{
+              height: 500,
+              plugins: plugins,
+              toolbar: toolbars,
+              // defined programming languages
+              codesample_languages: [
+                { text: "HTML/XML", value: "markup" },
+                { text: "JavaScript", value: "javascript" },
+                { text: "CSS", value: "css" },
+                { text: "PHP", value: "php" },
+                { text: "Ruby", value: "ruby" },
+                { text: "Python", value: "python" },
+                { text: "Java", value: "java" },
+                { text: "C", value: "c" },
+                { text: "C#", value: "csharp" },
+                { text: "C++", value: "cpp" },
+              ],
+              content_style: `
               body {
                 font-family: 'Roboto', sans-serif;
                 color: #222;
@@ -99,20 +89,16 @@ const RichTextEditor = () => {
                 float: right;
               }
             `,
-          images_upload_url: "http://localhost:3000/api/blog",
-          automatic_uploads: true,
-          images_reuse_filename: true,
-          images_upload_handler: handleImageUpload,
-          imagetools_toolbar:
-            "rotateleft rotateright | flipv fliph | editimage imageoptions",
-        }}
+              images_upload_url: "http://localhost:3000/api/blog",
+              automatic_uploads: true,
+              images_reuse_filename: true,
+              images_upload_handler: handleImageUpload,
+              imagetools_toolbar:
+                "rotateleft rotateright | flipv fliph | editimage imageoptions",
+            }}
+          />
+        )}
       />
-      <button
-        className="bg-blue-900 py-2 px-4 rounded-lg drop-shadow-xl mt-2"
-        onClick={onSubmit}
-      >
-        Submit
-      </button>
     </div>
   );
 };
