@@ -15,51 +15,24 @@ const RichTextEditor = () => {
   // const [text, setText] = useState("");
 
   const handleImageUpload = (blobInfo, progress, failure) => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:3000/api/blog", true);
-
+    return new Promise(async (resolve, reject) => {
       const formData = new FormData();
-      // formData.append("file", blobInfo.blob(), blobInfo.filename());
       formData.append("file", blobInfo.blob());
-      //console.log(blobInfo.filename())
+      try {
+        const response = await fetch("/api/blog", {
+          method: "POST",
+          body: formData,
+        });
 
-      xhr.upload.onprogress = (e) => {
-        progress((e.loaded / e.total) * 100);
-        if (progress && typeof progress === "function") {
-          const percent = 0;
-          progress(percent);
+        if (response.ok) {
+          const res = await response.json();
+          resolve("http://localhost:3000/" + res.location);
+        } else {
+          reject("Can upload image");
         }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status === 403) {
-          reject({ message: "HTTP Error: " + xhr.status, remove: true });
-          return;
-        }
-
-        if (xhr.status < 200 || xhr.status >= 300) {
-          reject("HTTP Error: " + xhr.status);
-          return;
-        }
-
-        const json = JSON.parse(xhr.responseText);
-
-        if (!json || typeof json.location != "string") {
-          reject("Invalid JSON: " + xhr.responseText);
-          return;
-        }
-        resolve("http://localhost:3000/" + json.location);
-      };
-
-      xhr.onerror = () => {
-        reject({ message: "Image upload failed", remove: true });
-        if (failure && typeof failure === "function") {
-          failure("Image upload failed");
-        }
-      };
-
-      xhr.send(formData);
+      } catch (error) {
+        reject("Error uploading file:", error);
+      }
     });
   };
 
@@ -88,22 +61,6 @@ const RichTextEditor = () => {
           height: 500,
           plugins: plugins,
           toolbar: toolbars,
-
-          // need to prepare backend then will come back
-          /* without images_upload_url set, Upload tab won't show up*/
-          // images_upload_url: "postAcceptor.php",
-
-          // /* we override default upload handler to simulate successful upload*/
-          // images_upload_handler: function (blobInfo, success, failure) {
-          //   console.log(blobInfo);
-          //   setTimeout(function () {
-          //     /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-          //     success(
-          //       "http://moxiecode.cachefly.net/tinymce/v9/images/logo.png"
-          //     );
-          //   }, 2000);
-          // },
-
           // defined programming languages
           codesample_languages: [
             { text: "HTML/XML", value: "markup" },
@@ -146,6 +103,8 @@ const RichTextEditor = () => {
           automatic_uploads: true,
           images_reuse_filename: true,
           images_upload_handler: handleImageUpload,
+          imagetools_toolbar:
+            "rotateleft rotateright | flipv fliph | editimage imageoptions",
         }}
       />
       <button
