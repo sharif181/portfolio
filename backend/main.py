@@ -1,8 +1,25 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
+
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
+from sqlalchemy.orm import Session
+
+from database import crud, models, schemas
+from database.db import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 origins = [
@@ -21,17 +38,12 @@ app.add_middleware(
 )
 
 
-@app.post("/upload-image/")
-async def create_upload_file(uploaded_file: UploadFile = File(...)):
-    print("in upload file")
-    print(uploaded_file)
-    file_location = f"images/{uploaded_file.filename}"
-    with open(file_location, "wb+") as file_object:
-        file_object.write(uploaded_file.file.read())
-
-    # { location: '/uploaded/image/path/image.png' }
-    return {"location": file_location}
-    # return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
+@app.post("/post/", response_model=schemas.Post)
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
+    # db_user = crud.get_user_by_email(db, email=user.email)
+    # if db_user:
+    #     raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_post(db=db, post=post)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import RichTextEditor from "./RichTextEditor";
+import { navigate } from "@/app/server-actions/actions";
 
 const PostForm = ({ post }) => {
   const { register, handleSubmit, watch, setValue, control, getValues } =
@@ -15,8 +16,53 @@ const PostForm = ({ post }) => {
       },
     });
 
+  const upload_thumbnail = async (image) => {
+    const formData = new FormData();
+    formData.append("file", image[0]);
+    try {
+      const response = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const res = await response.json();
+        return { location: "http://localhost:3000/" + res.location };
+      } else {
+        return { location: nul };
+      }
+    } catch (error) {
+      return { location: nul };
+    }
+  };
+
   const submit = async (data) => {
-    console.log(data);
+    try {
+      let locations = null;
+      if (data.image) {
+        locations = await upload_thumbnail(data.image);
+      }
+      const post_data = {
+        title: data.title,
+        content: data.content,
+        content_type: data.type,
+        slug: data.slug,
+        thumbnail: locations?.location || null,
+      };
+      await fetch("http://localhost:8000/post/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post_data),
+      });
+      setValue("slug", "");
+      setValue("title", "");
+      setValue("content", "", { shouldValidate: true });
+      setValue("content_type", "project");
+      localStorage.setItem("content", "");
+      navigate("/admin/blog");
+    } catch {}
   };
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string")

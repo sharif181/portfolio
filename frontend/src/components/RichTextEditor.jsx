@@ -13,7 +13,7 @@ const RichTextEditor = ({ name, control, label, defaultvalue = "" }) => {
       const formData = new FormData();
       formData.append("file", blobInfo.blob());
       try {
-        const response = await fetch("/api/blog", {
+        const response = await fetch("/api/upload-image", {
           method: "POST",
           body: formData,
         });
@@ -89,7 +89,7 @@ const RichTextEditor = ({ name, control, label, defaultvalue = "" }) => {
                 float: right;
               }
             `,
-              images_upload_url: "http://localhost:3000/api/blog",
+              images_upload_url: "http://localhost:3000/api/upload-image",
               automatic_uploads: true,
               images_reuse_filename: true,
               images_upload_handler: handleImageUpload,
